@@ -11,6 +11,8 @@ interface GameBoardProps {
     onReset: () => void;
     onPlayAgain: () => void;
     canUndo: boolean;
+    isBotThinking?: boolean;
+    isBotGame?: boolean;
 }
 
 const GameBoard = ({
@@ -20,6 +22,8 @@ const GameBoard = ({
     onReset,
     onPlayAgain,
     canUndo,
+    isBotThinking = false,
+    isBotGame = false,
 }: GameBoardProps) => {
     const { player1, player2, currentPlayer, state, board, moveHistory } = snapshot;
     const activePlayer = currentPlayer === 'player1' ? player1 : player2;
@@ -29,15 +33,18 @@ const GameBoard = ({
     // Determine winner for overlay
     const winner = state === GameState.WON ? lastMove?.player ?? null : null;
 
+    // Disable board when game is over or bot is thinking
+    const isBoardDisabled = isGameOver || isBotThinking;
+
     const handleDrop = (col: number) => {
-        if (isGameOver) return;
+        if (isBoardDisabled) return;
         onMakeMove(col);
     };
 
     return (
-        <div className="w-full min-h-screen flex flex-col items-center justify-center p-4 sm:p-8">
+        <div className="w-full min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 md:p-8">
             {/* Header */}
-            <div className="text-center mb-6 animate-slide-up">
+            <div className="text-center mb-4 sm:mb-6 animate-slide-up">
                 <h1 className="text-2xl sm:text-3xl font-heading tracking-tight">
                     Connect
                     <span className="inline-block ml-1 px-2 py-0.5 bg-main text-main-foreground rounded-base border-2 border-border text-xl sm:text-2xl">
@@ -47,13 +54,13 @@ const GameBoard = ({
             </div>
 
             {/* Main layout: Board (left) + Stats (right) */}
-            <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start justify-center w-full max-w-5xl">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-10 items-center lg:items-start justify-center w-full max-w-5xl">
                 {/* Board */}
                 <div className="shrink-0">
                     <Board
                         board={board}
                         currentPlayerColor={activePlayer.color}
-                        isGameOver={isGameOver}
+                        isGameOver={isBoardDisabled}
                         lastMove={lastMove}
                         onDrop={handleDrop}
                         moveCounter={moveHistory.length}
@@ -61,7 +68,7 @@ const GameBoard = ({
                 </div>
 
                 {/* Sidebar */}
-                <div className="flex flex-col gap-4 w-full lg:w-64">
+                <div className="flex flex-col gap-3 sm:gap-4 w-full lg:w-64">
                     <GameStats
                         player1={player1}
                         player2={player2}
@@ -69,9 +76,11 @@ const GameBoard = ({
                         currentPlayerColor={activePlayer.color}
                         gameState={state}
                         moveHistory={moveHistory}
+                        isBotThinking={isBotThinking}
+                        isBotGame={isBotGame}
                     />
                     <GameControls
-                        canUndo={canUndo}
+                        canUndo={canUndo && !isBotThinking}
                         onUndo={onUndo}
                         onReset={onReset}
                     />

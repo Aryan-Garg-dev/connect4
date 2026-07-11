@@ -40,7 +40,7 @@ const Column = ({
     return (
         <div
             className={cn(
-                'flex flex-col gap-2 items-center p-1 rounded-lg',
+                'flex flex-col gap-1 sm:gap-2 items-center p-0.5 sm:p-1 rounded-lg',
                 'transition-all duration-200 cursor-pointer',
                 canInteract && 'hover:bg-white/10',
                 !canInteract && 'cursor-not-allowed'
@@ -89,13 +89,13 @@ const Board = ({ board, currentPlayerColor, isGameOver, lastMove, onDrop, moveCo
     }
 
     return (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-2 sm:gap-3">
             {/* Column indicators */}
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
                 {columns.map((_, i) => (
                     <div
                         key={i}
-                        className="w-12 sm:w-14 flex items-center justify-center"
+                        className="w-10 sm:w-12 md:w-14 flex items-center justify-center"
                     >
                         <span className="text-xs font-mono text-indigo-300/60">{i + 1}</span>
                     </div>
@@ -104,9 +104,9 @@ const Board = ({ board, currentPlayerColor, isGameOver, lastMove, onDrop, moveCo
 
             {/* Board frame */}
             <div className={cn(
-                'p-3 sm:p-4 rounded-xl',
+                'p-2 sm:p-3 md:p-4 rounded-xl',
                 'bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-800',
-                'border-4 border-black shadow-[6px_6px_0px_0px_#000]',
+                'border-3 sm:border-4 border-black shadow-[4px_4px_0px_0px_#000] sm:shadow-[6px_6px_0px_0px_#000]',
                 'relative overflow-hidden'
             )}>
                 {/* Shimmer overlay */}
@@ -120,7 +120,7 @@ const Board = ({ board, currentPlayerColor, isGameOver, lastMove, onDrop, moveCo
                 />
 
                 {/* Columns container */}
-                <div className="flex gap-2 relative z-10">
+                <div className="flex gap-1 sm:gap-2 relative z-10">
                     {columns.map((cells, colIndex) => (
                         <Column
                             key={colIndex}

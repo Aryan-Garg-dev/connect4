@@ -22,7 +22,7 @@ interface DiscProps {
 }
 
 const Disc = ({ color, isGhost = false, isLatestMove = false, shouldAnimate = false }: DiscProps) => {
-    const baseClasses = 'size-12 sm:size-14 rounded-full transition-all duration-200';
+    const baseClasses = 'size-10 sm:size-12 md:size-14 rounded-full transition-all duration-200';
 
     if (!color && !isGhost) {
         return (

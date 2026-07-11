@@ -33,7 +33,7 @@ export class Board {
         this.grid = getEmptyBoard(rows, cols);
     }
 
-    private getLowestEmptyRow = (column: number): number => {
+    getLowestEmptyRow = (column: number): number => {
         for (let i = this.rows - 1; i >= 0; i--)
             if (this.grid[i][column] == null) return i;
         return -1;
@@ -62,6 +62,18 @@ export class Board {
 
     removeDisc = (row: number, col: number): void => {
         this.grid[row][col] = null;
+    }
+
+    copy = () => {
+        const copy = new Board(this.rows, this.cols, this.discsToWin);
+        this.grid.forEach((row, r) => {
+            row.forEach((disc, c) => {
+                if (disc !== null) {
+                    copy.grid[r][c] = new Disc(disc.color);
+                }
+            });
+        });
+        return copy;
     }
 
     toObject = (): BoardJson => {
