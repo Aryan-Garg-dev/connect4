@@ -3,6 +3,7 @@ import { DiscColor } from '../../lib/connect4/disc';
 import { Player } from '../../lib/connect4/player';
 import PlayerForm from './PlayerForm';
 import { cn } from '../../lib/utils';
+import { useGameHaptics } from '../../hooks/useGameHaptics';
 
 interface PlayerRegistrationProps {
     onStartGame: (p1: Player, p2: Player, isBotGame: boolean) => void;
@@ -17,8 +18,10 @@ const PlayerRegistration = ({ onStartGame }: PlayerRegistrationProps) => {
     const [player1, setPlayer1] = useState<PlayerData>({ name: '', color: null });
     const [player2, setPlayer2] = useState<PlayerData>({ name: '', color: null });
     const [isBotMode, setIsBotMode] = useState(false);
+    const { onButtonTap } = useGameHaptics();
 
     const handleBotToggle = () => {
+        onButtonTap();
         const newBotMode = !isBotMode;
         setIsBotMode(newBotMode);
         if (newBotMode) {
@@ -50,6 +53,7 @@ const PlayerRegistration = ({ onStartGame }: PlayerRegistrationProps) => {
 
     const handleStart = () => {
         if (!isValid || !player1.color || !player2.color) return;
+        onButtonTap();
         onStartGame(
             new Player(player1.name.trim(), player1.color),
             new Player(player2.name.trim(), player2.color),

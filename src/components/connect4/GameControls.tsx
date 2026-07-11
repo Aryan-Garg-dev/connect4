@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils';
+import { useGameHaptics } from '../../hooks/useGameHaptics';
 
 interface GameControlsProps {
     canUndo: boolean;
@@ -7,6 +8,7 @@ interface GameControlsProps {
 }
 
 const GameControls = ({ canUndo, onUndo, onReset }: GameControlsProps) => {
+    const { onButtonTap } = useGameHaptics();
     const buttonBase = cn(
         'py-2 sm:py-2.5 px-4 sm:px-5 rounded-base font-heading text-sm',
         'border-2 border-border cursor-pointer',
@@ -31,7 +33,7 @@ const GameControls = ({ canUndo, onUndo, onReset }: GameControlsProps) => {
             <button
                 type="button"
                 disabled={!canUndo}
-                onClick={onUndo}
+                onClick={() => { onButtonTap(); onUndo(); }}
                 className={cn(
                     canUndo ? activeButton : disabledButton,
                     'flex-1 sm:flex-auto'
@@ -43,7 +45,7 @@ const GameControls = ({ canUndo, onUndo, onReset }: GameControlsProps) => {
             {/* Reset */}
             <button
                 type="button"
-                onClick={onReset}
+                onClick={() => { onButtonTap(); onReset(); }}
                 className={cn(
                     activeButton,
                     'flex-1 sm:flex-auto',

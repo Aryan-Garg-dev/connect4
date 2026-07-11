@@ -4,6 +4,7 @@ import { BoardJson } from '../../lib/connect4/board';
 import { MoveJson } from '../../lib/connect4/move';
 import Disc from './Disc';
 import { cn } from '../../lib/utils';
+import { useGameHaptics } from '../../hooks/useGameHaptics';
 
 interface ColumnProps {
     colIndex: number;
@@ -25,6 +26,7 @@ const Column = ({
     moveCounter,
 }: ColumnProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const { onColumnHover } = useGameHaptics();
 
     // Find the lowest empty row for ghost disc
     const lowestEmptyRow = (() => {
@@ -37,6 +39,13 @@ const Column = ({
     const isFull = lowestEmptyRow === -1;
     const canInteract = !isGameOver && !isFull;
 
+    const handleMouseEnter = () => {
+        if (canInteract) {
+            setIsHovered(true);
+            onColumnHover();
+        }
+    };
+
     return (
         <div
             className={cn(
@@ -45,7 +54,7 @@ const Column = ({
                 canInteract && 'hover:bg-white/10',
                 !canInteract && 'cursor-not-allowed'
             )}
-            onMouseEnter={() => canInteract && setIsHovered(true)}
+            onMouseEnter={handleMouseEnter}
             onMouseLeave={() => setIsHovered(false)}
             onClick={() => canInteract && onDrop(colIndex)}
         >

@@ -2,6 +2,7 @@ import { GameState } from '../../lib/connect4/game';
 import { DiscColor } from '../../lib/connect4/disc';
 import type { PlayerJson } from '../../lib/connect4/player';
 import { cn } from '../../lib/utils';
+import { useGameHaptics } from '../../hooks/useGameHaptics';
 
 interface WinOverlayProps {
     gameState: GameState;
@@ -11,6 +12,8 @@ interface WinOverlayProps {
 }
 
 const WinOverlay = ({ gameState, winner, onPlayAgain, onNewGame }: WinOverlayProps) => {
+    const { onButtonTap } = useGameHaptics();
+
     if (gameState === GameState.IN_PROGRESS) return null;
 
     const isDraw = gameState === GameState.DRAW;
@@ -70,14 +73,14 @@ const WinOverlay = ({ gameState, winner, onPlayAgain, onNewGame }: WinOverlayPro
                 <div className="flex flex-col gap-3">
                     <button
                         type="button"
-                        onClick={onPlayAgain}
+                        onClick={() => { onButtonTap(); onPlayAgain(); }}
                         className={cn(buttonBase, 'bg-main text-main-foreground w-full')}
                     >
                         🔁 Play Again
                     </button>
                     <button
                         type="button"
-                        onClick={onNewGame}
+                        onClick={() => { onButtonTap(); onNewGame(); }}
                         className={cn(buttonBase, 'bg-secondary-background text-foreground w-full')}
                     >
                         👋 New Players

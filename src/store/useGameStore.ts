@@ -5,6 +5,7 @@ import { Game, GameJson, GameState } from "../lib/connect4/game";
 import { Player } from "../lib/connect4/player";
 import { Board } from "../lib/connect4/board";
 import { BotEngine } from "../lib/connect4/bot-engine";
+import { triggerErrorToast, triggerInfoToast, triggerSuccessToast } from "../lib/haptics";
 
 interface GameStore {
     snapshot: GameJson | null;
@@ -36,12 +37,14 @@ export const useGameStore = create<GameStore>()(
                 const game = new Game(p1, p2);
                 set({ snapshot: game.toObject(), isBotGame, isBotThinking: false });
                 toast.success("Game started!");
+                triggerSuccessToast();
             },
 
             makeMove: (column: number) => {
                 const game = get().getGame();
                 if (!game) {
                     toast.error("No active game.");
+                    triggerErrorToast();
                     return false;
                 }
 
@@ -51,6 +54,7 @@ export const useGameStore = create<GameStore>()(
                     set({ snapshot: game.toObject() });
                 } else {
                     toast.error(result.message);
+                    triggerErrorToast();
                 }
 
                 return result.success;
@@ -94,6 +98,7 @@ export const useGameStore = create<GameStore>()(
                 const game = get().getGame();
                 if (!game) {
                     toast.error("No active game.");
+                    triggerErrorToast();
                     return false;
                 }
 
@@ -105,6 +110,7 @@ export const useGameStore = create<GameStore>()(
                     const firstUndo = game.undoLastMove();
                     if (!firstUndo.success) {
                         toast.error(firstUndo.message);
+                        triggerErrorToast();
                         return false;
                     }
                     // Then undo the human's move
@@ -113,10 +119,12 @@ export const useGameStore = create<GameStore>()(
                         // If second undo fails, we still have the first undo applied
                         set({ snapshot: game.toObject() });
                         toast.info("Move undone.");
+                        triggerInfoToast();
                         return true;
                     }
                     set({ snapshot: game.toObject(), isBotThinking: false });
                     toast.info("Moves undone.");
+                    triggerInfoToast();
                     return true;
                 }
 
@@ -125,8 +133,10 @@ export const useGameStore = create<GameStore>()(
                 if (result.success) {
                     set({ snapshot: game.toObject() });
                     toast.info("Move undone.");
+                    triggerInfoToast();
                 } else {
                     toast.error(result.message);
+                    triggerErrorToast();
                 }
 
                 return result.success;
@@ -148,6 +158,7 @@ export const useGameStore = create<GameStore>()(
             resetGame: () => {
                 set({ snapshot: null, isBotGame: false, isBotThinking: false });
                 toast.success("Game reset.");
+                triggerSuccessToast();
             },
 
             getCurrentPlayer: () => {
